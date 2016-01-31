@@ -23,8 +23,9 @@ mongoose.connect(process.env.MONGO_URI);
 
 
 
-var authRoute = require('./routes/authRoute.js')(passport);
+var authRoute = require('./routes/authRoute')(passport);
 var indexRoute = require('./routes/indexRoute');
+var yelpRoute = require('./routes/yelpRoute');
 
 var app = express();
 
@@ -51,6 +52,7 @@ app.use(passport.session());
 
 app.use('/', indexRoute);
 app.use('/auth', authRoute);
+app.use('/yelp', yelpRoute);
 
 // initialize passport
 var initPassport = require('./config/passport-init');

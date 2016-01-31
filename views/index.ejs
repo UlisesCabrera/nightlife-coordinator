@@ -35,9 +35,9 @@
     
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-left" role="search">
+          <form class="navbar-form navbar-left" role="search" ng-submit="search()" >
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
+              <input type="text" class="form-control" ng-model="location" placeholder="Search">
             </div>
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
@@ -52,7 +52,19 @@
     </nav>    
     <div class="container-fluid">
       <div class="row">
-
+          <div class="col-xs-12">
+            <div class="media" ng-repeat="bar in bars">
+              <div class="media-left media-middle">
+                <a href="{{ bar.url }}">
+                  <img class="media-object" ng-src="{{ bar.image_url }}" alt="{{ bar.name }}">
+                </a>
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading">{{ bar.name }}</h4>
+                <p>{{ bar.snippet_text}}</p>
+              </div>
+            </div>            
+          </div>
       </div>
     </div>
 	<script type="text/javascript">

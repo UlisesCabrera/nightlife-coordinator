@@ -9,3 +9,15 @@ angular.module('HomePageModule').factory('usersFactory',['$http', function($http
     return usersFactory;
     
 }]);
+
+
+angular.module('HomePageModule').factory('yelpFactory',['$http', function($http){
+    var yelpFactory = {};
+
+    // gets user passed to the window object by the server
+    yelpFactory.getBars = function(location) {
+        return $http.get('/yelp/'+location);
+    };
+    
+    return yelpFactory;
+}]);
