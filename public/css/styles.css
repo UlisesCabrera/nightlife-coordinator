@@ -1,1 +1,25 @@
 .angular-google-map-container { height: 100vh; }
+
+.barList {
+    position:absolute;
+    right:0;
+    bottom:0;
+    z-index:3;
+    max-height: 100%;
+    overflow:scroll;
+    /* fall back color*/
+    background-color:rgb(255,255,255);
+    background-color:rgba(255,255,255,0.6); 
+}
+
+.barList img {
+    margin: 0 auto 10px;
+    max-width: 125px;
+    display:block;
+}
+
+.list-group-item {
+    /* fall back color*/
+   background-color:rgb(255,255,255);
+   background-color:rgba(255,255,255,0.6); 
+}

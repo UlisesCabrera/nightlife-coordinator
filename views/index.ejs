@@ -26,10 +26,10 @@
     <![endif]-->
   </head>
   <body ng-controller="HomePageController">
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
+        <div class="navbar-header" >
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -55,22 +55,31 @@
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
-    </nav>    
-    <div class="container-fluid">
-      <div class="row">
-          <div class="col-xs-12">
-            <ui-gmap-google-map center='map.center' events="map.events" zoom='map.zoom'>
-              <ui-gmap-marker ng-if="'barMarkers.length > 1'" ng-repeat="marker in barMarkers" coords="marker.location.coordinate" options="{ animation : googleMapsSDK.Animation.DROP }" idkey="marker.id" click="marker.openInfoWindow()">
-                  <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()">
-                    <div>
-                      <h2>{{marker.name}}</h2>
-                      </div>
-                  </ui-gmap-window>
-              </ui-gmap-marker>              
-            </ui-gmap-google-map>
-          </div>
+    </nav>   
+    
+    <!-- Map and bar lists -->
+    <ui-gmap-google-map options='map.options' center='map.center' events="map.events" zoom='map.zoom'>
+      <ui-gmap-marker ng-if="'barMarkers.length > 1'" ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions" click="marker.openInfoWindow()">
+          <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()">
+            <div>
+              <h4>{{marker.name}}</h4>
+              <p>{{ marker.snippet_text }}</p>
+              <button ng-click="going(marker.id, getCurrentUser().username)" class='btn btn-small btn-primary'>Going?</button>
+            </div>
+          </ui-gmap-window>
+      </ui-gmap-marker>              
+    </ui-gmap-google-map>
+      <div class="barList" ng-show="barMarkers.length > 1">
+        <div class="list-group">
+          <h3 class="text-center">Local bars:</h3>
+          <img ng-src="images/yelp_powered_btn_red@2x.png" class="img-responsive">
+          <a href="#" class="list-group-item " ng-repeat="marker in barMarkers" ng-click="marker.openInfoWindow()">
+            <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge">Going: 0</span></h4>
+            </a>
+         </div>
       </div>
     </div>
+    
 	<script type="text/javascript">
 	  
 	  // fix the facebook url bug

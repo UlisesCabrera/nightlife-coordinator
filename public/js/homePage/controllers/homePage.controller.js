@@ -7,9 +7,10 @@ angular.module('HomePageModule')
     $scope.getCurrentUser = function() {
 	    return usersFactory.user ? usersFactory.user : null;
 	};
-    
+	
     // will hold location from the search bar
     $scope.location = '';
+    
     // will hold bar results
    	$scope.barMarkers = [];
    
@@ -34,7 +35,36 @@ angular.module('HomePageModule')
 			    	}    
 		  });
      	}
-    }  
+    }
+    
+	// default maps settings
+	$scope.map = { 
+    	center : { latitude: 1, longitude: 1 },
+    	zoom: 2,
+        options: {},    	
+    	events: {
+            tilesloaded: function (map) {
+                $scope.$apply(function () {
+                	console.log('Apply');
+                	// getting a instance of the map loaded.
+                    $scope.mapInstance = map;
+                    
+                    // setting controls positions after the SDK is loaded
+                    var position = {
+		    				position: $scope.googleMapsSDK.ControlPosition.LEFT_BOTTOM
+		    		};
+                    $scope.mapInstance.setOptions({
+		    			zoomControlOptions : position,
+		    			panControlOptions: position,
+		    			streetViewControlOptions : position,
+		    			overviewMapControlOptions : position,
+		    			mapTypeControlOptions: position
+					});
+                });
+            }
+        }
+    };
+        
     
     // inits google maps
     function initMap() {
@@ -48,6 +78,7 @@ angular.module('HomePageModule')
 	
 	// create markers based on bars location
     function createMarkers(location) {
+	   
 		yelpFactory.getBars(location)
 		    .then(
 		        function(res){
@@ -57,7 +88,14 @@ angular.module('HomePageModule')
 		                
 		                // setting markers info windows
 		                $scope.barMarkers.forEach(function(marker){
-		                	marker.windowOptions = { visible: false };
+		                	marker.windowOptions = { 
+		                		visible: false,
+		                		maxWidth: 250
+		                	};
+		                	marker.animationOptions = {
+		                		animation: $scope.googleMapsSDK.Animation.DROP
+		                		
+		                	};
 		                	marker.closeInfoWindow = function() {marker.windowOptions.visible = false;};
 		                	marker.openInfoWindow = function() {marker.windowOptions.visible = !marker.windowOptions.visible;};
 		                });
@@ -72,21 +110,6 @@ angular.module('HomePageModule')
 		);
     }
 	
-	// default maps settings
-	$scope.map = { 
-    	center : { latitude: 1, longitude: 1 },
-    	zoom: 2,
-    	events: {
-            tilesloaded: function (map) {
-                $scope.$apply(function () {
-                	console.log('Apply');
-                	// getting a instance of the map loaded.
-                    $scope.mapInstance = map;
-                });
-            }
-        }
-    };
-    
 	// if user shares his position set zoom to 15 and use his coordinates.
 	if (navigator.geolocation) {
 	   
