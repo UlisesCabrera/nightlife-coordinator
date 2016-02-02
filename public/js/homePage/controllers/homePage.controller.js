@@ -1,7 +1,15 @@
 /* global angular*/
 
 angular.module('HomePageModule')
-    .controller('HomePageController',['$scope', 'usersFactory','yelpFactory','uiGmapGoogleMapApi', function($scope, usersFactory, yelpFactory, uiGmapGoogleMapApi){
+    .controller('HomePageController',['$scope', 'usersFactory','yelpFactory','uiGmapGoogleMapApi','uiGmapIsReady', function($scope, usersFactory, yelpFactory, uiGmapGoogleMapApi,uiGmapIsReady){
+	
+	// makes sure to load the map after the googleMapsSDK is ready.
+	uiGmapGoogleMapApi.then(function(maps) {
+		console.log('maps sdk loaded');
+		$scope.googleMapsSDK = maps;
+    	$scope.geocoder = new $scope.googleMapsSDK.Geocoder();
+	});          
+    
     
     // gets current logged user
     $scope.getCurrentUser = function() {
@@ -13,72 +21,15 @@ angular.module('HomePageModule')
     
     // will hold bar results
    	$scope.barMarkers = [];
-   
-   	// set google maps position based on user current location
-    function setPosition(position) {
-       $scope.map.center = {latitude:position.coords.latitude, longitude:position.coords.longitude};
-       $scope.map.zoom = 12;
-       // will set markers based on current location, just if the geocoder is available.
-       if ($scope.geocoder)  {
-	       $scope.geocoder.geocode(
-	       		{ 
-	       		  'location': { 
-	       		  		lat:position.coords.latitude, 
-	       		  		lng: position.coords.longitude
-	       		  }
-	       			
-	       		}, function (results, status) {
-			    	if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
-			      		createMarkers(results[0].formatted_address);
-			    	} else {
-			      		alert('Geocode was not successful for the following reason: ' + status);
-			    	}    
-		  });
-     	}
-    }
-    
+	
 	// default maps settings
 	$scope.map = { 
     	center : { latitude: 1, longitude: 1 },
-    	zoom: 2,
-        options: {},    	
-    	events: {
-            tilesloaded: function (map) {
-                $scope.$apply(function () {
-                	console.log('Apply');
-                	// getting a instance of the map loaded.
-                    $scope.mapInstance = map;
-                    
-                    // setting controls positions after the SDK is loaded
-                    var position = {
-		    				position: $scope.googleMapsSDK.ControlPosition.LEFT_BOTTOM
-		    		};
-                    $scope.mapInstance.setOptions({
-		    			zoomControlOptions : position,
-		    			panControlOptions: position,
-		    			streetViewControlOptions : position,
-		    			overviewMapControlOptions : position,
-		    			mapTypeControlOptions: position
-					});
-                });
-            }
-        }
-    };
-        
-    
-    // inits google maps
-    function initMap() {
-		uiGmapGoogleMapApi.then(function(maps) {
-			//getting a instance of the google maps sdk
-			console.log('maps sdk loaded');
-			$scope.googleMapsSDK = maps;
-	    	$scope.geocoder = new $scope.googleMapsSDK.Geocoder();
-		});       
-	}
-	
+    	zoom: 2
+    };   
+  
 	// create markers based on bars location
     function createMarkers(location) {
-	   
 		yelpFactory.getBars(location)
 		    .then(
 		        function(res){
@@ -109,28 +60,77 @@ angular.module('HomePageModule')
 		        }
 		);
     }
-	
-	// if user shares his position set zoom to 15 and use his coordinates.
-	if (navigator.geolocation) {
-	   
-	   initMap();
-       navigator.geolocation.getCurrentPosition(setPosition);
-
-	// else, set zoom to world and wait for him to provide location via form	
-	} else {
-       initMap();
-    } 	
-
-	// set map position based on user search
-    $scope.setLocation =  function() {
-    	$scope.geocoder.geocode({'address': $scope.location}, function(results, status) {
-		    if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
-		      	$scope.mapInstance.setCenter(results[0].geometry.location);
-		      	$scope.mapInstance.setZoom(12);
-		      	createMarkers($scope.location);
-		    } else {
-		      alert('Geocode was not successful for the following reason: ' + status);
-		    }    
-	  	});	
-    };
+    
+    
+	// set map position based on user search or user current location
+    $scope.setLocation =  function(position) {
+    	// if search location is available, use it as first option.
+    	if ($scope.location) {
+	    	$scope.geocoder.geocode({'address': $scope.location}, function(results, status) {
+			    if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
+			      	$scope.mapInstance.setCenter(results[0].geometry.location);
+			      	$scope.mapInstance.setZoom(12);
+			      	createMarkers($scope.location);
+			      	
+			      	// save location on session storage
+					sessionStorage.setItem('location', $scope.location);
+			    } else {
+			      alert('Geocode was not successful for the following reason: ' + status);
+			    }    
+		  	});
+    	} else {
+	       // if search location is not available, use the current location as second option
+		   $scope.mapInstance.setCenter({lat:position.coords.latitude, lng:position.coords.longitude});
+		   $scope.mapInstance.setZoom(12);
+		   
+		   // reverse geocode location in order to used the human readable address with the yelp api
+	       $scope.geocoder.geocode(
+	       		{ 
+	       		  'location': { 
+	       		  		lat:position.coords.latitude, 
+	       		  		lng: position.coords.longitude
+	       		  }
+	       			
+	       		}, function (results, status) {
+			    	if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
+			      		createMarkers(results[0].formatted_address);
+			    	} else {
+			      		alert('Geocode was not successful for the following reason: ' + status);
+			    	}    
+	  			}
+	  		);
+ 		}    		
+	};
+    
+    // perform these operations only after the map is ready.
+    uiGmapIsReady.promise(1).then(function(instances) {
+       instances.forEach(function(inst) {
+            $scope.mapInstance = inst.map;
+            // setting controls positions after the map is loaded
+            var position = {
+    				position: $scope.googleMapsSDK.ControlPosition.LEFT_BOTTOM
+    		};
+            $scope.mapInstance.setOptions({
+    			zoomControlOptions : position,
+    			panControlOptions: position,
+    			streetViewControlOptions : position,
+    			overviewMapControlOptions : position,
+    			mapTypeControlOptions: position
+			});
+			
+			
+			/**
+			 * Check if the user has a location saved on session storage if not, 
+			 * if it shared his location to set inital map center with those.
+			 */
+			if (sessionStorage.getItem("location")) {
+				  $scope.location = sessionStorage.getItem("location");
+				  $scope.setLocation();
+			} else {
+				if (navigator.geolocation) {
+			       navigator.geolocation.getCurrentPosition($scope.setLocation);
+				} 	
+			}  			
+        });
+    });
 }]);

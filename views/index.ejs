@@ -58,7 +58,7 @@
     </nav>   
     
     <!-- Map and bar lists -->
-    <ui-gmap-google-map options='map.options' center='map.center' events="map.events" zoom='map.zoom'>
+    <ui-gmap-google-map center='map.center' zoom='map.zoom'>
       <ui-gmap-marker ng-if="'barMarkers.length > 1'" ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions" click="marker.openInfoWindow()">
           <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()">
             <div>
@@ -72,8 +72,11 @@
       <div class="barList" ng-show="barMarkers.length > 1">
         <div class="list-group">
           <h3 class="text-center">Local bars:</h3>
-          <img ng-src="images/yelp_powered_btn_red@2x.png" class="img-responsive">
+          <img ng-src="images/yelp_powered_btn_red@2x.png" class="img-responsive barList-yelpBtn">
           <a href="#" class="list-group-item " ng-repeat="marker in barMarkers" ng-click="marker.openInfoWindow()">
+            <div class="barList-rating"> 
+              <span>Rating:</span><img ng-src="{{marker.rating_img_url}}" alt="rating" class="img-responsive">
+            </div>
             <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge">Going: 0</span></h4>
             </a>
          </div>
