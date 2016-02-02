@@ -10,8 +10,14 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
+    
+    <!-- My Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <script src="vendors/lodash/dist/lodash.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
+    <script src="vendors/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+    <script src="vendors/angular-google-maps/dist/angular-google-maps.min.js"></script>  
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -35,7 +41,7 @@
     
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-left" role="search" ng-submit="search()" >
+          <form class="navbar-form navbar-left" role="search" ng-submit="setLocation()" >
             <div class="form-group">
               <input type="text" class="form-control" ng-model="location" placeholder="Search">
             </div>
@@ -53,6 +59,9 @@
     <div class="container-fluid">
       <div class="row">
           <div class="col-xs-12">
+            <ui-gmap-google-map center='map.center' events="map.events" zoom='map.zoom'></ui-gmap-google-map>
+            
+          <!--  
             <div class="media" ng-repeat="bar in bars">
               <div class="media-left media-middle">
                 <a href="{{ bar.url }}">
@@ -63,7 +72,9 @@
                 <h4 class="media-heading">{{ bar.name }}</h4>
                 <p>{{ bar.snippet_text}}</p>
               </div>
-            </div>            
+            </div>
+           --> 
+            
           </div>
       </div>
     </div>
@@ -80,7 +91,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  
 
     
     <!-- SubModules -->
