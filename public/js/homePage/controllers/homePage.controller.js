@@ -10,12 +10,31 @@ angular.module('HomePageModule')
     
     // will hold location from the search bar
     $scope.location = '';
+    // will hold bar results
+   	$scope.barMarkers = [];
    
    	// set google maps position based on user current location
     function setPosition(position) {
        $scope.map.center = {latitude:position.coords.latitude, longitude:position.coords.longitude};
-       $scope.map.zoom = 15;
-    }
+       $scope.map.zoom = 12;
+       // will set markers based on current location, just if the geocoder is available.
+       if ($scope.geocoder)  {
+	       $scope.geocoder.geocode(
+	       		{ 
+	       		  'location': { 
+	       		  		lat:position.coords.latitude, 
+	       		  		lng: position.coords.longitude
+	       		  }
+	       			
+	       		}, function (results, status) {
+			    	if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
+			      		createMarkers(results[0].formatted_address);
+			    	} else {
+			      		alert('Geocode was not successful for the following reason: ' + status);
+			    	}    
+		  });
+     	}
+    }  
     
     // inits google maps
     function initMap() {
@@ -33,7 +52,16 @@ angular.module('HomePageModule')
 		    .then(
 		        function(res){
 		            if (res.data.state === 'success') {
-		                console.log(res.data.bars);   
+		                console.log(res.data.bars);
+		                $scope.barMarkers = res.data.bars.businesses;
+		                
+		                // setting markers info windows
+		                $scope.barMarkers.forEach(function(marker){
+		                	marker.windowOptions = { visible: false };
+		                	marker.closeInfoWindow = function() {marker.windowOptions.visible = false;};
+		                	marker.openInfoWindow = function() {marker.windowOptions.visible = !marker.windowOptions.visible;};
+		                });
+		                
 		            } else {
 		                $scope.error = 'error getting data from yelp';
 		            }
@@ -42,7 +70,7 @@ angular.module('HomePageModule')
 		            console.log(error);
 		        }
 		);
-    }	
+    }
 	
 	// default maps settings
 	$scope.map = { 
@@ -75,7 +103,8 @@ angular.module('HomePageModule')
     	$scope.geocoder.geocode({'address': $scope.location}, function(results, status) {
 		    if (status === $scope.googleMapsSDK.GeocoderStatus.OK) {
 		      	$scope.mapInstance.setCenter(results[0].geometry.location);
-		      	$scope.mapInstance.setZoom(15);
+		      	$scope.mapInstance.setZoom(12);
+		      	createMarkers($scope.location);
 		    } else {
 		      alert('Geocode was not successful for the following reason: ' + status);
 		    }    
