@@ -43,6 +43,15 @@ angular.module('HomePageModule')
 		                		visible: false,
 		                		maxWidth: 250
 		                	};
+		                	//TODO: Complete template
+		                	marker.templatedInfoWindow = {
+		                		templateUrl: 'partials/infowindow.html',
+		                		templateParameter: {
+          								name: marker.name,
+          								snippet: marker.snippet_text,
+          								img: marker.image_url
+        						}
+		                	};
 		                	marker.animationOptions = {
 		                		animation: $scope.googleMapsSDK.Animation.DROP
 		                		

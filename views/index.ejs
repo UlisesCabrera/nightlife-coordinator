@@ -60,12 +60,8 @@
     <!-- Map and bar lists -->
     <ui-gmap-google-map center='map.center' zoom='map.zoom'>
       <ui-gmap-marker ng-if="'barMarkers.length > 1'" ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions" click="marker.openInfoWindow()">
-          <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()">
-            <div>
-              <h4>{{marker.name}}</h4>
-              <p>{{ marker.snippet_text }}</p>
-              <button ng-click="going(marker.id, getCurrentUser().username)" class='btn btn-small btn-primary'>Going?</button>
-            </div>
+          <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()" templateUrl="marker.templatedInfoWindow.templateUrl" templateParameter="marker.templatedInfoWindow.templateParameter" ng-cloak> 
+
           </ui-gmap-window>
       </ui-gmap-marker>              
     </ui-gmap-google-map>
