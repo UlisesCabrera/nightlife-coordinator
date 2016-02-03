@@ -8,9 +8,26 @@ angular.module('HomePageModule')
 		console.log('maps sdk loaded');
 		$scope.googleMapsSDK = maps;
     	$scope.geocoder = new $scope.googleMapsSDK.Geocoder();
-	});          
-    
-    
+	});
+	
+	 /**
+	 * Check if the user has a location saved on session storage if not, 
+	 * if it shared his location to set inital map center with those.
+	 */
+
+	function initialLocation() { 
+		console.log("call initialLocation");
+	    if (sessionStorage.getItem("location")) {
+			  $scope.location = sessionStorage.getItem("location");
+			  $scope.setLocation();
+		} else {
+			if (navigator.geolocation) {
+		       navigator.geolocation.getCurrentPosition($scope.setLocation);
+			} 	
+		} 
+	}	
+	
+	
     // gets current logged user
     $scope.getCurrentUser = function() {
 	    return usersFactory.user ? usersFactory.user : null;
@@ -34,7 +51,6 @@ angular.module('HomePageModule')
 		    .then(
 		        function(res){
 		            if (res.data.state === 'success') {
-		                console.log(res.data.bars);
 		                $scope.barMarkers = res.data.bars.businesses;
 		                
 		                // setting markers info windows
@@ -43,18 +59,8 @@ angular.module('HomePageModule')
 		                		visible: false,
 		                		maxWidth: 250
 		                	};
-		                	//TODO: Complete template
-		                	marker.templatedInfoWindow = {
-		                		templateUrl: 'partials/infowindow.html',
-		                		templateParameter: {
-          								name: marker.name,
-          								snippet: marker.snippet_text,
-          								img: marker.image_url
-        						}
-		                	};
 		                	marker.animationOptions = {
 		                		animation: $scope.googleMapsSDK.Animation.DROP
-		                		
 		                	};
 		                	marker.closeInfoWindow = function() {marker.windowOptions.visible = false;};
 		                	marker.openInfoWindow = function() {marker.windowOptions.visible = !marker.windowOptions.visible;};
@@ -127,19 +133,8 @@ angular.module('HomePageModule')
     			mapTypeControlOptions: position
 			});
 			
-			
-			/**
-			 * Check if the user has a location saved on session storage if not, 
-			 * if it shared his location to set inital map center with those.
-			 */
-			if (sessionStorage.getItem("location")) {
-				  $scope.location = sessionStorage.getItem("location");
-				  $scope.setLocation();
-			} else {
-				if (navigator.geolocation) {
-			       navigator.geolocation.getCurrentPosition($scope.setLocation);
-				} 	
-			}  			
+			initialLocation();
+		
         });
     });
 }]);
