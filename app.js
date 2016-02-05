@@ -18,6 +18,7 @@ var session = require('express-session');
 
 
 require('./models/userModel.js');
+require('./models/barModel.js');
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URI);
 

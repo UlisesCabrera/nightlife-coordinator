@@ -80,8 +80,10 @@
                     </div>
                   </div>
                   <ul class="list-group">
-                    <li class="list-group-item"><button class="btn btn-block btn-primary"> Are You in?</button></li>
-                    <li class="list-group-item"><span class="badge">0</span>People going: </li>
+                    <li ng-hide="$parent.getCurrentUser().username" class="list-group-item">Please login to inform if you are going</li>
+                    <li ng-show="$parent.getCurrentUser().username && !$parent.userGoing($parent.marker, $parent.getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-primary"  ng-click="$parent.iAmGoing($parent.marker, $parent.getCurrentUser().username)"> Are You in?</button></li>
+                    <li ng-show="$parent.getCurrentUser().username && $parent.userGoing($parent.marker, $parent.getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-danger"  ng-click="$parent.notGoing($parent.marker, $parent.getCurrentUser().username)"> Not Going?</button></li>
+                    <li class="list-group-item"><span class="badge">{{marker.whoIsGoing.length}}</span>People going: </li>
                   </ul>
                 </div>
           </ui-gmap-window>
@@ -98,7 +100,7 @@
               <img ng-src="{{marker.rating_img_url}}" alt="rating" class="img-responsive center-block">
               <span class="label label-info">{{marker.review_count}} Reviews</span>
             </div>
-            <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge">Going: 0</span></h4>
+            <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge">Going: {{marker.whoIsGoing.length}}</span></h4>
           </a>
        </div>
     </div>

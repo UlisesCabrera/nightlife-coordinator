@@ -1,7 +1,42 @@
 /* global angular*/
 
 angular.module('HomePageModule')
-    .controller('HomePageController',['$scope', 'usersFactory','yelpFactory','uiGmapGoogleMapApi','uiGmapIsReady', function($scope, usersFactory, yelpFactory, uiGmapGoogleMapApi,uiGmapIsReady){
+    .controller('HomePageController',['$scope', 'usersFactory','yelpFactory','uiGmapGoogleMapApi','uiGmapIsReady', 
+    function($scope, usersFactory, yelpFactory, uiGmapGoogleMapApi,uiGmapIsReady){
+	
+	//checks if the user is going to a bar, to enable the 'Not going' button
+	$scope.userGoing = function(bar, user) {
+		if (bar.whoIsGoing.indexOf(user) === -1) {
+			return false;
+		} else { 
+			return true;
+		}
+	};
+	
+	$scope.notGoing = function(bar, user) {
+		var index =  bar.whoIsGoing.indexOf(user);
+		bar.whoIsGoing.splice(index, 1);	
+		yelpFactory.notGoing(bar.id, user)
+			.then(function(res){
+				if (res.data.state === 'failure') {
+					bar.whoIsGoing.push(user);
+					alert('Problem removing yourself from going');
+				}
+			});
+	};
+	
+	// going function, sends user and bar id to database and push user to client array
+    $scope.iAmGoing = function iAmGoing(bar, user) {
+    	bar.whoIsGoing.push(user);
+    	yelpFactory.going(bar.id, user)
+    		.then(function(res){
+    			if (res.data.state === 'failure') { 
+					var index =  bar.whoIsGoing.indexOf(user);
+					bar.whoIsGoing.splice(index, 1);
+					alert('Problem adding yourself to the bar list');
+    		}
+    	});
+    };	
 	
 	// makes sure to load the map after the googleMapsSDK is ready.
 	uiGmapGoogleMapApi.then(function(maps) {
@@ -51,7 +86,7 @@ angular.module('HomePageModule')
 		    .then(
 		        function(res){
 		            if (res.data.state === 'success') {
-		                $scope.barMarkers = res.data.bars.businesses;
+		                $scope.barMarkers = res.data.bars;
 		                
 		                // setting markers info windows
 		                $scope.barMarkers.forEach(function(marker){
@@ -116,7 +151,7 @@ angular.module('HomePageModule')
 	  		);
  		}    		
 	};
-    
+	
     // perform these operations only after the map is ready.
     uiGmapIsReady.promise(1).then(function(instances) {
        instances.forEach(function(inst) {

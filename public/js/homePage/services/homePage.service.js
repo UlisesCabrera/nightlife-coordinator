@@ -19,5 +19,13 @@ angular.module('HomePageModule').factory('yelpFactory',['$http', function($http)
         return $http.get('/yelp/'+location);
     };
     
+    yelpFactory.going = function(barId, user) {
+        return $http.put('/yelp/'+barId+'/'+ user);
+    };
+    
+    yelpFactory.notGoing = function(barId, user) {
+        return $http.delete('/yelp/'+barId+'/'+ user);
+    };
+    
     return yelpFactory;
 }]);
