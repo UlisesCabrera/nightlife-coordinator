@@ -26,39 +26,65 @@
     <![endif]-->
   </head>
   <body ng-controller="HomePageController">
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header" >
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
           <a class="navbar-brand" href="#/"><%= title %></a>
-        </div>
-    
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-left" role="search" ng-submit="setLocation()" >
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="location" placeholder="Search">
+          
+          <!-- login Modal -->
+          <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Sign in with ...</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                      <a href="/auth/facebook" class="btn btn-primary">Facebook <i class="fa fa-facebook"></i></a>
+                    </div>
+                    <div class="btn-group" role="group">
+                      <a href="/auth/twitter" class="btn btn-info" >Twitter <i class="fa fa-twitter"></i></a>
+                    </div>                    
+                  </div>
+                </div>
+              </div>
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-          <ul class="nav navbar-nav navbar-right">
-            <li ng-hide="getCurrentUser()"><a href="/auth/facebook">Sign in with Facebook <i class="fa fa-facebook"></i></a></li>
-            <li ng-hide="getCurrentUser()"><a href="/auth/twitter">Sign in with Twitter <i class="fa fa-twitter"></i></a></li>
-            <li ng-show="getCurrentUser()"><p class="navbar-text"> Hello, {{ getCurrentUser().username }}</p></li>
-            <li ng-show="getCurrentUser()"><a href="/auth/signout">Log out</a></li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
+          </div>
+          <!-- login Modal -->
+          
+          <!-- Sign in or sign out buttons-->
+        </div>
+             
+        <form class="navbar-form navbar-left" role="search" ng-submit="setLocation()" >
+        <div class="form-group-search">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button"><i class="fa fa-location-arrow"></i></button>
+            </span>                
+            <input type="text" class="form-control form-search" ng-model="location" placeholder="Search">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-success btn-search">Search</button>
+            </span>
+          </div><!-- /input-group -->
+        </div>
+      </form>
+      <div class="navbar-right">
+        <div class="div-login">
+          <p ng-show="getCurrentUser()" class="navbar-text" ng-cloak> Hello, {{ getCurrentUser().username }}</p>
+          <a ng-show="getCurrentUser()" class="btn btn-danger navbar-btn btn-login btn-block" href="/auth/signout" ng-cloak>Sign out</a>
+          <button ng-hide="getCurrentUser()"  type="button" class="btn btn-primary btn-block navbar-btn btn-login" data-toggle="modal" data-target="#login" ng-cloak>
+            Sign In
+          </button>
+        </div>        
+      </div>
       </div><!-- /.container-fluid -->
     </nav>   
     
     <!-- Map and bar lists -->
-    <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+    <ui-gmap-google-map center='map.center' zoom='map.zoom' class='hidden-xs'>
       <ui-gmap-marker ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions" >
           <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()" ng-cloak> 
                 <div class="infowindow-container">

@@ -1,52 +1,108 @@
 .angular-google-map-container { height: 100vh; }
+body { padding-top: 50px; }
 
-.barList {
-    position:absolute;
-    right:0;
-    top:25%;
-    z-index:3;
-    height: 100%;
-    max-height:400px;
-    overflow:scroll;
-    /* fall back color*/
-    background-color:rgb(255,255,255);
-    background-color:rgba(255,255,255,0.6); 
+/************** 
+
+Nav Styles
+
+****************/
+
+.form-group-search {
+     width: 80%;
+     margin: 0 auto;
+     display:block;
+}
+
+.div-login {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.btn-login {
+    margin: 8px auto;
+}
+
+
+.modal-backdrop {
+    z-index: 100;
+}
+
+.navbar-text {
     text-align:center;
+    color: white !important;
+}
+
+
+
+
+
+/************** 
+
+Tablet Styles
+
+**************/
+@media (min-width: 768px) {
+
+    /************** 
     
-}
+    infowindow styles
+    
+    *****************/
+    
+    .infowindow-container {
+        padding: 10px;
+    }
+    
+    .infowindow-image {
+        margin: 10px auto;
+        display: block;
+    }
+    
+    .infowindow-heading {
+        text-align: center;
+        border-bottom: 1px dashed black;
+        padding-bottom: 10px;
+    }
+    
+    .infowindow-businesses-details {
+        margin: 10px auto;
+        text-align: center;
+    }
+    
+    /************** 
+    
+    Bar List styles
+    
+    *****************/    
 
-.barList-yelpBtn {
-    max-width: 125px;
-    margin: 0 auto 10px;
-    display: block;
-}
-
-.barList-rating {
-    margin-bottom:15px;
-}
-
-.list-group-item {
-    /* fall back color*/
-   background-color:rgb(255,255,255);
-   background-color:rgba(255,255,255,0.6); 
-}
-
-.infowindow-container {
-    padding: 10px;
-}
-
-.infowindow-image {
-    margin: 10px auto;
-    display: block;
-}
-
-.infowindow-heading {
-    text-align: center;
-    border-bottom: 1px dashed black;
-    padding-bottom: 10px;
-}
-
-.infowindow-businesses-details {
-    margin: 10px auto;
-    text-align: center;
+    .barList {
+        position:absolute;
+        right:0;
+        top:25%;
+        z-index:2;
+        height: 100%;
+        max-height:400px;
+        overflow:scroll;
+        /* fall back color*/
+        background-color:rgb(255,255,255);
+        background-color:rgba(255,255,255,0.6); 
+        text-align:center;
+        
+    }
+    
+    .barList-yelpBtn {
+        max-width: 125px;
+        margin: 0 auto 10px;
+        display: block;
+    }
+    
+    .barList-rating {
+        margin-bottom:15px;
+    }
+    
+    .list-group-item {
+        /* fall back color*/
+       background-color:rgb(255,255,255);
+       background-color:rgba(255,255,255,0.6); 
+    }
 }
