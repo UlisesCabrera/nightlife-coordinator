@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title><%= title %></title>
 
@@ -31,6 +31,7 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header" >
           <a class="navbar-brand" href="#/"><%= title %></a>
+          <p class="navbar-text">Where are we going tonight?</p>
           
           <!-- login Modal -->
           <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -54,15 +55,16 @@
             </div>
           </div>
           <!-- login Modal -->
-          
-          <!-- Sign in or sign out buttons-->
+        
         </div>
-             
+         
+         
+        <!-- Search Field-->     
         <form class="navbar-form navbar-left" role="search" ng-submit="setLocation()" >
         <div class="form-group-search">
           <div class="input-group">
             <span class="input-group-btn">
-              <button class="btn btn-default" type="button"><i class="fa fa-location-arrow"></i></button>
+              <button class="btn btn-default" type="button" ng-click="setCurrentLocation()"><i class="fa fa-location-arrow"></i></button>
             </span>                
             <input type="text" class="form-control form-search" ng-model="location" placeholder="Search">
             <span class="input-group-btn">
@@ -71,6 +73,8 @@
           </div><!-- /input-group -->
         </div>
       </form>
+      
+      <!-- Sign in or sign out buttons-->
       <div class="navbar-right">
         <div class="div-login">
           <p ng-show="getCurrentUser()" class="navbar-text" ng-cloak> Hello, {{ getCurrentUser().username }}</p>
@@ -82,10 +86,10 @@
       </div>
       </div><!-- /.container-fluid -->
     </nav>   
-    
+
     <!-- Map and bar lists -->
-    <ui-gmap-google-map center='map.center' zoom='map.zoom' class='hidden-xs'>
-      <ui-gmap-marker ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions" >
+    <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+      <ui-gmap-marker ng-repeat="marker in barMarkers" coords="marker.location.coordinate" idkey="marker.id" options="marker.animationOptions">
           <ui-gmap-window options="marker.windowOptions" closeClick="marker.closeInfoWindow()" ng-cloak> 
                 <div class="infowindow-container">
                   <img ng-show="{{marker.image_url.length > 1}}" class="infowindow-image img-thumbnail img-responsive" ng-src="{{marker.image_url}}" alt="marker.name">
@@ -98,7 +102,7 @@
                   </div>
                   <div class="panel panel-default">
                     <div class="panel-heading">
-                      <h3 class="panel-title">Word on the streets...</h3>
+                      <h3 class="panel-title">Word on the street...</h3>
                     </div>
                     <div class="panel-body">
                       <p>{{ marker.snippet_text }} <a href="{{marker.url}}" target="_blank">See more...</a></p>
@@ -106,7 +110,7 @@
                     </div>
                   </div>
                   <ul class="list-group">
-                    <li ng-hide="$parent.getCurrentUser().username" class="list-group-item">Please login to inform if you are going</li>
+                    <li ng-hide="$parent.getCurrentUser().username" class="list-group-item bg-warning"><p class="bg-warning text-center">You must be signed in to add yourself to the bar list</p></li>
                     <li ng-show="$parent.getCurrentUser().username && !$parent.userGoing($parent.marker, $parent.getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-primary"  ng-click="$parent.iAmGoing($parent.marker, $parent.getCurrentUser().username)"> Are You in?</button></li>
                     <li ng-show="$parent.getCurrentUser().username && $parent.userGoing($parent.marker, $parent.getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-danger"  ng-click="$parent.notGoing($parent.marker, $parent.getCurrentUser().username)"> Not Going?</button></li>
                     <li class="list-group-item"><span class="badge">{{marker.whoIsGoing.length}}</span>People going: </li>
@@ -116,20 +120,67 @@
       </ui-gmap-marker>              
     </ui-gmap-google-map>
       
-      
-    <div class="barList" ng-show="barMarkers.length > 1">
+    <!-- Bar List --> 
+    <div class="barList">
       <div class="list-group">
-        <h3 class="text-center">Local bars:</h3>
+        <button type="button" ng-click="toggleList()" class="barList-hide btn btn-danger btn-small"><i class="fa fa-minus"></i></button>
+        <h3 class="text-center">Bars on this area...</h3>
         <img ng-src="images/yelp_powered_btn_red@2x.png" class="img-responsive barList-yelpBtn">
-          <a href="#" class="list-group-item " ng-repeat="marker in barMarkers" ng-click="marker.openInfoWindow()">
+          <img class="barList-loading" ng-hide="barMarkers.length > 1" ng-src="images/loading.gif" alt="loading bars">
+          <a href="#" class="list-group-item " ng-repeat="marker in barMarkers" ng-click="marker.openInfoWindow(marker)" ng-show="barMarkers.length > 1">
             <div class="barList-rating"> 
               <img ng-src="{{marker.rating_img_url}}" alt="rating" class="img-responsive center-block">
               <span class="label label-info">{{marker.review_count}} Reviews</span>
             </div>
-            <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge">Going: {{marker.whoIsGoing.length}}</span></h4>
+            <h4 class="list-group-item-heading">{{ marker.name }} <span class="badge hidden-xs">Going: {{marker.whoIsGoing.length}}</span></h4>
+            <button class="btn btn-primary btn-small btn-more-info visible-xs">More Info</button>
           </a>
        </div>
     </div>
+    
+    <!-- Show Bar List button-->
+    <button class="btn btn-danger barList-show" ng-click="toggleList()">Show Bar List</button>
+    
+   <!-- Modal for bar details - MOBILE ONLY-->
+    <div id="barModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">{{bar.name}} 
+                    <span ng-hide="bar.is_closed" class="label label-success"> Open Now</span>
+                    <span ng-show="bar.is_closed" class="label label-danger"> Closed Now</span>
+              </h4>
+            </div>
+            <div class="modal-body">
+                <div class="infowindow-container">
+                  <img class="infowindow-image img-thumbnail img-responsive" ng-src="{{bar.image_url}}" alt="bar.name">
+                  <div class="infowindow-businesses-details">
+                    <span><i class="fa fa-phone"></i> <a href="tel:{{bar.display_phone}}">{{bar.display_phone}}</a></span>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">Word on the street...</h3>
+                    </div>
+                    <div class="panel-body">
+                      <p>{{ bar.snippet_text }} <a href="{{bar.url}}" target="_blank">See more...</a></p>
+                      <img ng-src="{{bar.rating_img_url}}" alt="rating" class="img-responsive center-block">
+                    </div>
+                  </div>
+                  <ul class="list-group">
+                    <li ng-hide="getCurrentUser().username" class="list-group-item"><p class="bg-warning text-center">You must be signed in to add yourself to the bar list</p></li>
+                    <li ng-show="getCurrentUser().username && !userGoing(bar, getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-primary"  ng-click="iAmGoing(bar, getCurrentUser().username)"> Are You in?</button></li>
+                    <li ng-show="getCurrentUser().username && userGoing(bar, getCurrentUser().username)" class="list-group-item"><button class="btn btn-block btn-danger"  ng-click="notGoing(bar, getCurrentUser().username)"> Not Going?</button></li>
+                    <li class="list-group-item"><span class="badge">{{bar.whoIsGoing.length}}</span>People going: </li>
+                  </ul>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <!-- Modal for bar details - MOBILE ONLY-->    
+    
+    
     
 	<script type="text/javascript">
 	  

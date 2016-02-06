@@ -1,5 +1,4 @@
 .angular-google-map-container { height: 100vh; }
-body { padding-top: 50px; }
 
 /************** 
 
@@ -32,42 +31,100 @@ Nav Styles
     color: white !important;
 }
 
+/************** 
 
+Bar List styles
 
+*****************/    
 
+.barList {
+    position:absolute;
+    top:35%;
+    width: 100%;
+    z-index:2;
+    /* fall back color*/
+    background-color:rgb(255,255,255);
+    background-color:rgba(255,255,255,0.6); 
+    text-align:center;
+    max-height:470px;
+    overflow:scroll;
+}
+
+.barList-hide {
+    position:absolute;
+    top:1%;
+    right:1%;
+}
+
+.barList-show {
+    position:absolute;
+    bottom:50px;
+    right:10px;
+    z-index:10;
+    display: none;
+}
+
+.barList-hide:hover {
+    cursor:pointer;
+}
+
+.barList-yelpBtn {
+    max-width: 150px;
+    margin: 0 auto 15px;
+    display: block;
+}
+
+.barList-rating {
+    margin-bottom: 15px;
+}
+
+.barList-loading {
+     margin-top: 40px;   
+}
+
+.btn-more-info {
+    margin: 10px auto 2px;
+}
+
+.list-group-item {
+    /* fall back color*/
+   background-color:rgb(255,255,255);
+   background-color:rgba(255,255,255,0.6); 
+}
 
 /************** 
 
+infowindow styles
+
+*****************/
+    
+.infowindow-container {
+    padding: 10px;
+}
+
+.infowindow-image {
+    margin: 10px auto;
+    display: block;
+}
+
+.infowindow-heading {
+    text-align: center;
+    border-bottom: 1px dashed black;
+    padding-bottom: 10px;
+}
+
+.infowindow-businesses-details {
+    margin: 10px auto;
+    text-align: center;
+}
+
+/*************************************** 
+
 Tablet Styles
 
-**************/
+****************************************/
 @media (min-width: 768px) {
 
-    /************** 
-    
-    infowindow styles
-    
-    *****************/
-    
-    .infowindow-container {
-        padding: 10px;
-    }
-    
-    .infowindow-image {
-        margin: 10px auto;
-        display: block;
-    }
-    
-    .infowindow-heading {
-        text-align: center;
-        border-bottom: 1px dashed black;
-        padding-bottom: 10px;
-    }
-    
-    .infowindow-businesses-details {
-        margin: 10px auto;
-        text-align: center;
-    }
     
     /************** 
     
@@ -76,33 +133,20 @@ Tablet Styles
     *****************/    
 
     .barList {
-        position:absolute;
         right:0;
         top:25%;
-        z-index:2;
+        max-width:400px;
         height: 100%;
-        max-height:400px;
-        overflow:scroll;
         /* fall back color*/
-        background-color:rgb(255,255,255);
-        background-color:rgba(255,255,255,0.6); 
-        text-align:center;
         
     }
     
     .barList-yelpBtn {
         max-width: 125px;
         margin: 0 auto 10px;
-        display: block;
     }
     
     .barList-rating {
         margin-bottom:15px;
-    }
-    
-    .list-group-item {
-        /* fall back color*/
-       background-color:rgb(255,255,255);
-       background-color:rgba(255,255,255,0.6); 
     }
 }

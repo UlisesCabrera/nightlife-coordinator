@@ -6,10 +6,12 @@ angular.module('HomePageModule')
 	
 	//checks if the user is going to a bar, to enable the 'Not going' button
 	$scope.userGoing = function(bar, user) {
-		if (bar.whoIsGoing.indexOf(user) === -1) {
-			return false;
-		} else { 
-			return true;
+		if (bar) {
+			if (bar.whoIsGoing.indexOf(user) === -1) {
+				return false;
+			} else { 
+				return true;
+			}
 		}
 	};
 	
@@ -38,6 +40,13 @@ angular.module('HomePageModule')
     	});
     };	
 	
+	
+	// will toggle the list visibility
+	$scope.toggleList = function() {
+		$('.barList').toggle(500);
+		$('.barList-show').toggle(500);
+	};
+	
 	// makes sure to load the map after the googleMapsSDK is ready.
 	uiGmapGoogleMapApi.then(function(maps) {
 		console.log('maps sdk loaded');
@@ -51,7 +60,6 @@ angular.module('HomePageModule')
 	 */
 
 	function initialLocation() { 
-		console.log("call initialLocation");
 	    if (sessionStorage.getItem("location")) {
 			  $scope.location = sessionStorage.getItem("location");
 			  $scope.setLocation();
@@ -60,8 +68,14 @@ angular.module('HomePageModule')
 		       navigator.geolocation.getCurrentPosition($scope.setLocation);
 			} 	
 		} 
-	}	
-	
+	}
+	// sets current location based on geoposition.
+	$scope.setCurrentLocation =  function() {
+		$scope.location = '';
+		if (navigator.geolocation) {
+	       navigator.geolocation.getCurrentPosition($scope.setLocation);
+		} 			
+	};
 	
     // gets current logged user
     $scope.getCurrentUser = function() {
@@ -73,6 +87,7 @@ angular.module('HomePageModule')
     
     // will hold bar results
    	$scope.barMarkers = [];
+   	
 	
 	// default maps settings
 	$scope.map = { 
@@ -98,7 +113,17 @@ angular.module('HomePageModule')
 		                		animation: $scope.googleMapsSDK.Animation.DROP
 		                	};
 		                	marker.closeInfoWindow = function() {marker.windowOptions.visible = false;};
-		                	marker.openInfoWindow = function() {marker.windowOptions.visible = !marker.windowOptions.visible;};
+		                	
+		                	marker.openInfoWindow = function(bar) {
+		                		// opens info window only on tablets and desktops
+		                		if ($(window).width() > 767) {
+		                			marker.windowOptions.visible = !marker.windowOptions.visible;
+		                		} else {
+		                		// opens modal on mobile devices, get bar clicked as parameter and uses it as scope.	
+		               				$scope.bar = bar;
+									$('#barModal').modal();
+		                		}
+		                	};
 		                });
 		                
 		            } else {
