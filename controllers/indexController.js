@@ -1,3 +1,5 @@
+require('dotenv').load();
+
 exports.serveIndex = function(req, res, next) {
   
 if (req.user) {
@@ -21,6 +23,7 @@ if (req.user) {
 }
   res.render('index', { 
       title: 'D\'NightLife',
-      user: JSON.stringify(req.user)
+      user: JSON.stringify(req.user),
+      googleMapKey : JSON.stringify(process.env.GOOGLE_MAPS_KEY)
   });
 };

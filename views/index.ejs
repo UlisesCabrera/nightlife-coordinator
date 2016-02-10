@@ -188,8 +188,10 @@
 	  // fix the facebook url bug
 		if (window.location.hash === '#_=_') window.location.hash = '#!';
 		
-		// pass the user object from the server so it can be used by angular
+		// pass the user object and google map key from the server so it can be used by angular
 		window.user = <%- user || 'null' %>;
+		window.googleMapKey = <%- googleMapKey || 'null' %>;
+		
 	</script>
 	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

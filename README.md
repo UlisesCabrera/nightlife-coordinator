@@ -57,6 +57,8 @@ FB_CLIENT_SECRET=[fb client secret]
 TWITTER_KEY=[twitter client id]
 TWITTER_SECRET=[twitter secret]
 
+GOOGLE_MAPS_KEY=[google maps key]
+
 YELP_CONSUMER_KEY=[yelp consumer key]
 YELP_CONSUMER_SECRET=[yelp consumer secret]
 YELP_TOKEN=[yelp token]

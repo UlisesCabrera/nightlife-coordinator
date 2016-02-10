@@ -2,7 +2,6 @@
 require('dotenv').load();
 var mongoose = require('mongoose');
 var Bar = mongoose.model('Bar');
-var User = mongoose.model('User');
 
 var Yelp = require('yelp');
 
@@ -107,6 +106,4 @@ exports.notGoing = function(req, res, next) {
           }
         }
     });
-
-  
 };
