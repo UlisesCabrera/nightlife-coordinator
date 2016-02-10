@@ -50,6 +50,13 @@ Bar List styles
     overflow:scroll;
 }
 
+.barList-name {
+    font-size: 1.7rem;
+    margin: 7px auto;
+    text-align: center;
+    font-weight:bold;
+}
+
 .barList-hide {
     position:absolute;
     top:1%;
@@ -125,6 +132,9 @@ Tablet Styles
 ****************************************/
 @media (min-width: 768px) {
 
+    .btn-block+.btn-block {
+        margin-top:8px;
+    }
     
     /************** 
     

@@ -76,8 +76,8 @@
       
       <!-- Sign in or sign out buttons-->
       <div class="navbar-right">
+        <p ng-show="getCurrentUser()" class="navbar-text visible-xs" ng-cloak> Hello, {{ getCurrentUser().username }}</p>        
         <div class="div-login">
-          <p ng-show="getCurrentUser()" class="navbar-text" ng-cloak> Hello, {{ getCurrentUser().username }}</p>
           <a ng-show="getCurrentUser()" class="btn btn-danger navbar-btn btn-login btn-block" href="/auth/signout" ng-cloak>Sign out</a>
           <button ng-hide="getCurrentUser()"  type="button" class="btn btn-primary btn-block navbar-btn btn-login" data-toggle="modal" data-target="#login" ng-cloak>
             Sign In
@@ -124,6 +124,7 @@
     <div class="barList">
       <div class="list-group">
         <button type="button" ng-click="toggleList()" class="barList-hide btn btn-danger btn-small"><i class="fa fa-minus"></i></button>
+         <p ng-show="getCurrentUser()" class="hidden-xs barList-name" ng-cloak> Hello, {{ getCurrentUser().username }}</p>
         <h3 class="text-center">Bars on this area...</h3>
         <img ng-src="images/yelp_powered_btn_red@2x.png" class="img-responsive barList-yelpBtn">
           <img class="barList-loading" ng-hide="barMarkers.length > 1" ng-src="images/loading.gif" alt="loading bars">
